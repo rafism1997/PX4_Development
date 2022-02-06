@@ -2,4 +2,4 @@
 
 #### The repositiry contains all the source code and other dependent files which I created as part of my PX4 development
 
-[PX4_with_Gazebo](https://github.com/rafism1997/PX4_Development/blob/main/PX4.png)
+![](https://github.com/rafism1997/PX4_Development/blob/main/PX4.png)
