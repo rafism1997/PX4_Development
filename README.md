@@ -296,3 +296,14 @@ int main(int argc, char **argv)
     return 0;
 }
 ```
+- Go back to main workspace and build the ros workspace
+
+```bash
+catkin_make  
+```
+
+or
+
+```bash
+catkin build
+```
