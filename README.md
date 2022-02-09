@@ -22,12 +22,6 @@ cd src
 git clone <url of repo>
 ```
 
-- Lets Clone mavros packages using git clone
-
-```bash
-git clone https://github.com/B-Bhanu-Teja/mavros.git
-```
-
  If you want to binary install
 
 - use the name of your ros distro - noetic or melodic
