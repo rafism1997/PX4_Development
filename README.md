@@ -107,7 +107,7 @@ catkin_package(
 
 # add all the files to be compiled
 #name of the cpp fiel
-add_executable(Controller src/Controller.cpp)
+add_executable(node_name src/node_file.cpp)
 target_link_libraries(Controller ${catkin_LIBRARIES})
 
 target_link_libraries(${OCTOMAP_LIBRARIES})
