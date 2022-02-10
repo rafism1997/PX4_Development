@@ -58,8 +58,7 @@ void control(ros::Publisher pub, ros::Rate rate)
         way_pose.pose.position.x = x[i];
         way_pose.pose.position.y = y[i];
     }
-    // way_pose.pose.position.x = way_pose.pose.position.x - 3;
-    // way_pose.pose.position.y = way_pose.pose.position.y - 3;
+  
       std::cout<<"Published point "<<"X"<<way_pose.pose.position.x << "y"<< way_pose.pose.position.y <<"z"<< way_pose.pose.position.z <<std::endl;
             pub.publish(waypoint);
             rate.sleep();
