@@ -37,3 +37,6 @@ catkin_package(
 add_executable(Controller src/Controller.cpp)
 target_link_libraries(Controller ${catkin_LIBRARIES})
 
+
+add_executable(offb_node src/offb_node.cpp)
+target_link_libraries(offb_node ${catkin_LIBRARIES})

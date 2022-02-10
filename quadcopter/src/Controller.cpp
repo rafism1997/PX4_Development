@@ -1,4 +1,3 @@
-//```cpp
 // OFFBOARD POSITION CONTROL TO MANEUVER THE DRONE 
 
 /** ROS HEADERS **/
@@ -24,6 +23,7 @@
 #include<iterator>
 #include<cmath>
 
+
 geometry_msgs::PoseStamped way_pose; //this receives the waypoint every time subscriber is called
 
 Eigen::Vector3d currPose;
@@ -34,7 +34,9 @@ bool WaypointUpdated = 0;
 
 void waypoint_cb(const geometry_msgs::PoseStamped pose)
 {
-    way_pose = pose;
+    way_pose = pose;    
+    //std::cout<<"Pose values"<<pose<<std::endl;
+    WaypointUpdated = 1;
 }
 /** drone pose callback **/
 void local_pose_cb(const geometry_msgs::PoseStamped pose)
@@ -47,14 +49,25 @@ void local_pose_cb(const geometry_msgs::PoseStamped pose)
 /** MAVROS OFFBOARD Control **/
 void control(ros::Publisher pub, ros::Rate rate)
 {   
-    geometry_msgs::PoseStamped waypoint = way_pose;
-        WaypointUpdated = 1;
-  
-      std::cout<<"Published point "<<std::endl;
+    geometry_msgs::PoseStamped waypoint = way_pose;   
+         
+    int x[4] = {1,4,4,1};
+    int y[4] = {1,1,4,4};
+
+    for(int i=0;i< sizeof(x) / sizeof (x[0]) && i < sizeof(y) / sizeof(y[0]);i++){
+        way_pose.pose.position.x = x[i];
+        way_pose.pose.position.y = y[i];
+    }
+    // way_pose.pose.position.x = way_pose.pose.position.x - 3;
+    // way_pose.pose.position.y = way_pose.pose.position.y - 3;
+      std::cout<<"Published point "<<"X"<<way_pose.pose.position.x << "y"<< way_pose.pose.position.y <<"z"<< way_pose.pose.position.z <<std::endl;
             pub.publish(waypoint);
-            rate.sleep(); 
+            rate.sleep();
+      
     
 }
+
+
 
 int main(int argc, char** argv)
 {
@@ -63,24 +76,21 @@ int main(int argc, char** argv)
 
     ros::Subscriber path = n.subscribe<geometry_msgs::PoseStamped>("/waypoint",1, waypoint_cb);
     ros::Subscriber loc = n.subscribe<geometry_msgs::PoseStamped>("/mavros/local_position/pose",10,local_pose_cb);
-    
 
     ros::Publisher wp_pub = n.advertise<geometry_msgs::PoseStamped>("/mavros/setpoint_position/local",10);
 
     /* Services */
-    ros::ServiceClient  arming_client = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming"); //in order to start the quadcopter
+    ros::ServiceClient  arming_client = n.serviceClient<mavros_msgs::CommandBool>("mavros/cmd/arming");
     ros::ServiceClient  landing_client = n.serviceClient<mavros_msgs::CommandTOL>("mavros/cmd/landing");
     ros::ServiceClient  set_mode_client = n.serviceClient<mavros_msgs::SetMode>("mavros/set_mode");
     
     ros::Rate rate(20);
     
-    /** get delay from user **/
-    std::cout<<"Enter  waypoint";
-
-
-    while(!WaypointUpdated || !ros::ok())
+    
+    std::cout<<"Enter  waypoint"<<std::endl;
+while(!WaypointUpdated || !ros::ok())
     {
-        std::cout<<"Waiting"<<std::endl;
+        std::cout<<"Waiting for Waypoint"<< ros::ok()<<std::endl;
         ros::spinOnce();
         rate.sleep();
 
@@ -89,6 +99,7 @@ int main(int argc, char** argv)
                 break;
             }
     }
+
    
 
     if(WaypointUpdated)
@@ -125,12 +136,10 @@ int main(int argc, char** argv)
 
         }
 
-        
+        count++;
         while(ros::ok())
         {
-            control(wp_pub, rate);
-            
-                 
+            control(wp_pub, rate);     
             ros::spinOnce();
 
             if(!ros::ok())
@@ -138,7 +147,7 @@ int main(int argc, char** argv)
 
         }
 
-    count++;
+    
     }
 
     ros::spinOnce();
